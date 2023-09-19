@@ -1,0 +1,239 @@
+#include <dt-bindings/zmk/keys.h>
+
+#define COMBO_TERM_NORMAL 24
+#define COMBO_TERM_SHORT  12
+#define COMBO_TERM_LONG   51
+
+#undef CUT
+#undef COPY
+#undef UNDO
+
+#define CUT        LG(X)
+#define COPY       LG(C)
+#define PASTE      LG(V)
+#define UNDO       LG(Z)
+#define REDO       LS(UNDO)
+#define SELECT_ALL LG(A)
+
+#define KLAAUF     LS(N8)
+#define KLAZU      LS(N9)
+#define EKLAAUF    LA(N5)
+#define EKLAZU     LA(N6)
+#define GKLAAUF    LA(N8)
+#define GKLAZU     LA(N9)
+#define DE_LESS       GRAVE
+#define DE_GREATER LS(GRAVE)
+
+#define AE          SQT
+#define UE          LBKT
+#define OE          SEMI
+#define GLEICH      LS(N0)
+#define DE_MULTIPLY LS(RIGHT_BRACKET)
+
+#define DE_AND     LS(N6)
+#define PARAGRAPH  LS(N3)
+
+#define DE_TILDE    LA(N)
+#define DE_CARET    LS(LA(N6))
+#define DE_EXCL     LS(N1)
+#define PLUSMINUS   LA(RIGHT_BRACKET)
+#define DE_HOCH    (ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_GRAVE_ACCENT_AND_TILDE)) // ^
+#define DE_SINGLE_QUOTE (LS(ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_BACKSLASH_AND_PIPE))) // '
+#define DE_DOUBLE_QUOTE (LS(ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_2_AND_AT))) // "
+#define DE_APOSTROPHE    EQUAL
+#define DE_BACKTICK   LS(EQUAL)
+//#define DE_HASH (ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_BACKSLASH_AND_PIPE))
+#define DE_EURO    RA(E) // €
+#define DE_COLON   LS(DOT)
+#define DE_AT      RA(L)
+#define DE_DOLLAR  LS(N4)
+#define DE_PERCENT LS(N5)
+#define DE_DEGREE  LS(ZMK_HID_USAGE(HID_USAGE_KEY, HID_USAGE_KEY_KEYBOARD_GRAVE_ACCENT_AND_TILDE))
+#define DE_PIPE    LA(N7)
+
+
+#define DE_BACKSLASH  LS(LA(N7))
+#define DE_SLASH  LS(N7)
+ 
+#define DE_MINUSLONG  LA(KP_SLASH)
+
+
+
+
+
+#define COMBO(NAME, BINDINGS, KEYPOS, MS) \
+    combo_##NAME { \
+        bindings = <BINDINGS>; \
+        key-positions = <KEYPOS>; \
+        timeout-ms = <MS>; \
+    };
+
+
+#define MACRO(name, keys) \
+    name: name## { \
+        label = #name; \
+        compatible = "zmk,behavior-macro"; \
+        #binding-cells = <0>; \
+        wait-ms = <1>; \
+        tap-ms = <1>; \
+        bindings = keys; \
+    };
+
+
+#define SHIFTED(name, normalkey, shiftedkey) \
+    name: name { \
+            compatible = "zmk,behavior-mod-morph"; \
+            label = ZMK_MACRO_STRINGIFY(ZM_ ## name); \
+            #binding-cells = <0>; \
+            bindings = normalkey, shiftedkey; \
+            mods = <(MOD_LSFT|MOD_RSFT)>; \
+            keep-mods = <(0)>; \
+        };
+
+
+//   0  1  2  3  4                 5  6  7  8  9
+//  10 11 12 13 14 15          16 17 18 19 20 21
+//  22 23 24 25 26 27          28 29 30 31 32 33
+//  34 35 36 37 38 39          40 41 42 43 44 45
+//  46 47 48 49 50 51          58 59 60 61 62 63
+//  64 65 66 67 68                75 76 77 78 79 
+//                69 52      57 74
+//                 70 53    56 73
+//                  71 54  55 72
+
+
+macros {
+    // btickandspace: backtick_with_space_macro {
+    //     label = "backtick_with_space_macro";
+    //     compatible = "zmk,behavior-macro";
+    //     #binding-cells = <0>;
+    //     wait-ms = <40>;
+    //     tap-ms = <40>;
+    //     bindings 
+    //     = <&kp DE_BACKTICK &kp SPACE>
+    //     //, <&kp N8 &kp N0>
+    //     ;
+    // };
+    
+    MACRO(btickandspace, <&kp DE_BACKTICK &kp SPACE>)
+    MACRO(macro_goLeftPipe200, <&kp LEFT &kp LEFT &kp DE_PIPE &kp N2 &kp N0 &kp N0>)
+    MACRO(macro_goLeftPipe300, <&kp LEFT &kp LEFT &kp DE_PIPE &kp N3 &kp N0 &kp N0>)
+    MACRO(macro_goLeftPipe400, <&kp LEFT &kp LEFT &kp DE_PIPE &kp N4 &kp N0 &kp N0>)
+    MACRO(macro_goLeftPipe500, <&kp LEFT &kp LEFT &kp DE_PIPE &kp N5 &kp N0 &kp N0>)
+    MACRO(macro_goLeftPipe600, <&kp LEFT &kp LEFT &kp DE_PIPE &kp N6 &kp N0 &kp N0>)
+    
+};
+
+behaviors {
+    hm: homerow_mods {
+        compatible = "zmk,behavior-hold-tap";
+        label = "HOMEROW_MODS";
+        #binding-cells = <2>;
+        tapping-term-ms = <300>;
+        quick-tap-ms = <0>;
+        flavor = "tap-preferred";
+        bindings = <&kp>, <&kp>;
+    };
+    
+    // use: "&gqt N4 PARAGRAPH" erzeugt: "4" bei Tap und : "§" bei langem Tap
+    gqt: global-quick-tap {
+        compatible = "zmk,behavior-hold-tap";
+        label = "GLOBAL_QUICK_TAP";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <300>;
+        quick-tap-ms = <200>;
+        global-quick-tap;
+        bindings = <&kp>, <&kp>;
+    };
+
+    gqtl: globalquick-tap-layer {
+        compatible = "zmk,behavior-hold-tap";
+        label = "GLOBAL_QUICK_TAP_LAYER";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <200>;
+        quick-tap-ms = <200>;
+        global-quick-tap;
+        bindings = <&mo>, <&kp>;
+    };
+
+    gqtbal: global-hold-tap {
+        compatible = "zmk,behavior-hold-tap";
+        label = "GLOBAL_HOLD_TAP";
+        #binding-cells = <2>;
+        flavor = "hold-preferred";
+        tapping-term-ms = <300>;
+        quick-tap-ms = <300>;
+        //global-quick-tap;
+        bindings = <&kp>, <&kp>;
+    };
+
+
+
+
+
+    numleft: num_left {
+        compatible = "zmk,behavior-tap-dance";
+        label = "LAYER_TAP_DANCE";
+        #binding-cells = <0>;
+        tapping-term-ms = <200>;
+        bindings = <&mo>, <&to>;
+    };
+
+    tobase: tobase {
+        compatible = "zmk,behavior-tap-dance";
+        label = "LAYER_TAP_DANCE";
+        #binding-cells = <0>;
+        tapping-term-ms = <200>;
+        bindings = <&mo 0>, <&to 0>;
+    };
+
+
+    SHIFTED(hash_excl, <&kp NON_US_HASH>, <&kp DE_EXCL>)
+    SHIFTED(N5_euro, <&kp N5>, <&kp N6>)
+    SHIFTED(dquote_apostrophe, <&kp DE_DOUBLE_QUOTE>, <&kp DE_APOSTROPHE>)
+    SHIFTED(squote_btick, <&kp DE_SINGLE_QUOTE>, <&btickandspace>)
+    // SHIFTED(squote_btick, <&kp DE_SINGLE_QUOTE>, <&kp X>)
+    
+    SHIFTED(pipe_pipe200, <&kp DE_PIPE>, <&kp DE_PIPE &kp N2 &kp N0 &kp N0 >)
+
+};
+
+
+combos {
+    compatible = "zmk,combos";
+
+    COMBO(hash_l   , &kp NON_US_HASH ,50 51, COMBO_TERM_LONG)
+    COMBO(percent_l, &kp DE_PERCENT  ,26 27, COMBO_TERM_LONG)
+    COMBO(gleich_l  , &kp GLEICH  ,38 39, COMBO_TERM_LONG)
+    
+
+    // COMBO(cut_l  , &kp CUT  ,48 49, COMBO_TERM_LONG)
+    // COMBO(copy_l , &kp COPY ,49 50, COMBO_TERM_LONG) 
+    // COMBO(paste_l, &kp PASTE,48 50, COMBO_TERM_LONG) 
+        
+    COMBO(ue, &kp UE,29 30, COMBO_TERM_LONG) 
+    COMBO(oe, &kp OE,30 31, COMBO_TERM_LONG) 
+    COMBO(ae, &kp AE,35 36, COMBO_TERM_LONG) 
+
+    COMBO(ek_auf, &kp EKLAAUF,25 26, COMBO_TERM_LONG) 
+    COMBO(ek_zu , &kp EKLAZU ,24 25, COMBO_TERM_LONG)
+    COMBO(k_auf , &kp KLAAUF ,37 38, COMBO_TERM_LONG) 
+    COMBO(k_zu  , &kp KLAZU  ,36 37, COMBO_TERM_LONG) 
+    COMBO(gk_auf, &kp GKLAAUF,49 50, COMBO_TERM_LONG) 
+    COMBO(gk_zu , &kp GKLAZU ,48 49, COMBO_TERM_LONG) 
+
+    
+    // right
+    COMBO(k_auf_r  , &kp KLAAUF    ,41 42, COMBO_TERM_LONG) 
+    COMBO(k_zu_r   , &kp KLAZU     ,42 43, COMBO_TERM_LONG)
+    COMBO(less_r   , &kp DE_LESS   ,59 60, COMBO_TERM_LONG) 
+    COMBO(greater_r, &kp DE_GREATER,60 61, COMBO_TERM_LONG) 
+    COMBO(goleftInKlammerUndDruckePipeZahl, &macro_goLeftPipe200,58 59, COMBO_TERM_LONG)
+    COMBO(goleftInKlammerUndDruckePipeZahl, &macro_goLeftPipe200,16 42, COMBO_TERM_LONG)
+    COMBO(goleftInKlammerUndDruckePipeZahl, &macro_goLeftPipe300,16 43, COMBO_TERM_LONG)
+    COMBO(goleftInKlammerUndDruckePipeZahl, &macro_goLeftPipe400,16 29, COMBO_TERM_LONG)
+    COMBO(goleftInKlammerUndDruckePipeZahl, &macro_goLeftPipe500,16 30, COMBO_TERM_LONG)
+    COMBO(goleftInKlammerUndDruckePipeZahl, &macro_goLeftPipe600,16 31, COMBO_TERM_LONG)
+};  
