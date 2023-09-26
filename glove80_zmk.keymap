@@ -69,6 +69,11 @@
     };
 
 
+// für meine normalen Buchstabentasten: bei Long Press wird Ctrl-Alt-Key ausgelöst
+// Mit diesem Makro steht die Bezeichnung übersichtlich im Glove80-Online-Layout-Editor
+#define LONG(key) LC(LA(key)) key
+
+
 #define MACRO(name, keys) \
     name: name## { \
         label = #name; \
@@ -215,11 +220,11 @@ combos {
         
     COMBO(ue, &kp UE,29 30, COMBO_TERM_LONG) 
     COMBO(oe, &kp OE,30 31, COMBO_TERM_LONG) 
-    COMBO(ae, &kp AE,35 36, COMBO_TERM_LONG) 
+    COMBO(ae, &kp AE,35 36, COMBO_TERM_LONG) // ä ist Combo h+a
 
     COMBO(ek_auf, &kp EKLAAUF,25 26, COMBO_TERM_LONG) 
     COMBO(ek_zu , &kp EKLAZU ,24 25, COMBO_TERM_LONG)
-    COMBO(k_auf , &kp KLAAUF ,37 38, COMBO_TERM_LONG) 
+    COMBO(k_auf , &kp KLAAUF ,37 38, COMBO_TERM_LONG)
     COMBO(k_zu  , &kp KLAZU  ,36 37, COMBO_TERM_LONG) 
     COMBO(gk_auf, &kp GKLAAUF,49 50, COMBO_TERM_LONG) 
     COMBO(gk_zu , &kp GKLAZU ,48 49, COMBO_TERM_LONG) 
